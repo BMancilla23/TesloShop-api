@@ -85,3 +85,97 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 })
 export class AppModule {}
 ```
+
+## Validation
+
+Instale el paquete `class-validator` para validar los datos de entrada.
+
+```bash
+pnpm add class-validator class-transformer
+```
+
+En el archivo `src/main.ts`, configure la clase `ValidationPipe` para validar los datos de entrada.
+
+```typescript
+import { ValidationPipe } from '@nestjs/common';
+
+app.useGlobalPipes(
+  new ValidationPipe({
+    // Remove properties that are not in the DTO
+    whitelist: true,
+    // Throw an error if there are properties that are not in the DTO
+    forbidNonWhitelisted: true,
+  }),
+);
+```
+
+Para validar los datos de entrada, se puede usar la clase `ValidationPipe`.
+
+```typescript
+import { ValidationPipe } from '@nestjs/common';
+
+@Module({
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({}),
+    },
+  ],
+});
+```
+
+## JWT
+
+Instale el paquete `@nestjs/jwt` para generar y verificar tokens JWT.
+
+```bash
+pnpm add @nestjs/passport passport @nestjs/jwt  passport-jwt && pnpm add --save-dev @types/passport-jwt
+```
+
+En el archivo `src/auth/auth.module.ts`, configure el módulo `JwtModule` para usar el token JWT.
+
+```typescript
+import { JwtModule } from '@nestjs/jwt';
+
+@Module({
+  imports: [
+    // Register Passport module with JWT strategy
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    // Register JWT module with async configuration
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
+    }),
+  ],
+});
+```
+
+## Swagger
+
+Instale el paquete `@nestjs/swagger` para documentar la API.
+
+```bash
+pnpm add @nestjs/swagger
+```
+
+En el archivo `src/main.ts`, configure el módulo `SwaggerModule` para documentar la API.
+
+```typescript
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+// Swagger configuration
+const config = new DocumentBuilder()
+  .setTitle('Teslo RESTFul API')
+  .setDescription('Teslo shop endpoints')
+  .setVersion('1.0')
+  .build();
+
+// Create the Swagger document
+const document = SwaggerModule.createDocument(app, config);
+// Setup the Swagger UI
+SwaggerModule.setup('api', app, document);
+```

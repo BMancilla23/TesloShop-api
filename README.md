@@ -61,3 +61,11 @@ To start the application, run:
 ```bash
 pnpm run start:dev
 ```
+
+## Seed the database
+
+To seed the database, run:
+
+```bash
+http://localhost:3000/api/seed
+```
