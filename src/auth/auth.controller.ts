@@ -2,18 +2,19 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
-import { CreateUserDto, LoginUserDto } from './dto';
 import { User } from './entities/auth.entity';
 import { RolesGuard } from './guards/roles.guard';
 
-import { UserRole } from './enums/role.enum';
-import { Auth, GetUser, Roles } from './decorators';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserResponseDto } from '@/auth/dto/response/user.response.dto';
+import { Auth, GetUser, Roles } from './decorators';
+import { UserRole } from './enums/role.enum';
+import { AuthResponseDto, CreateUserDto, LoginUserDto } from '@/auth/dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -24,7 +25,7 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'User was created successfully',
-    type: User,
+    type: AuthResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -39,7 +40,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'User was logged in successfully',
-    type: User,
+    type: AuthResponseDto,
   })
   @ApiResponse({
     status: 400,
@@ -50,12 +51,25 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
+  @ApiOperation({ summary: 'Check authentication status' })
+  @ApiResponse({
+    status: 200,
+    description: 'User authentication status checked successfully',
+    type: AuthResponseDto,
+  })
+  @ApiBearerAuth()
+  @Get('check-status')
+  @UseGuards(AuthGuard())
+  checkAuthStatus(@GetUser() user: User) {
+    return this.authService.checkAuthStatus(user);
+  }
+
   // Route private get user
   @ApiOperation({ summary: 'Get the user' })
   @ApiResponse({
     status: 200,
     description: 'User was fetched successfully',
-    type: User,
+    type: UserResponseDto,
   })
   @Get('private')
   @UseGuards(AuthGuard())
@@ -68,7 +82,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'User was fetched successfully',
-    type: User,
+    type: UserResponseDto,
   })
   @ApiBearerAuth()
   @Get('private2')
@@ -83,7 +97,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'User was fetched successfully',
-    type: User,
+    type: UserResponseDto,
   })
   @Get('private3')
   @Auth(UserRole.ADMIN, UserRole.SELLER)
