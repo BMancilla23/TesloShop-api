@@ -6,10 +6,12 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
-import { ProductImage } from './product-image.entity';
+
 import { User } from 'src/auth/entities/auth.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProductImage } from '@/products/entities/product-image.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -94,19 +96,24 @@ export class Product {
   })
   images: string[]; */
   // Relations
-  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+  /*  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
     cascade: true, // When the product is saved, the images are saved
     eager: true, // When the product is fetched, the images are fetched
+  }) */
+  // 🔹 Aquí no hacemos import directo de la clase para evitar el ciclo
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    cascade: true,
+    eager: true,
   })
-  images?: ProductImage[];
+  images?: Relation<ProductImage[]>;
 
   /*   @ApiProperty({
     description: 'User related to the product',
     type: User,
   }) */
   // User related to the product
-  @ManyToOne(() => User, (user) => user.products, { eager: true })
-  user: User;
+  @ManyToOne(() => User, { eager: true })
+  user: Relation<User>;
 
   @BeforeInsert()
   checkSlugInsert() {

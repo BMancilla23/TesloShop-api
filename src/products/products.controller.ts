@@ -23,7 +23,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Product } from './entities';
+import { Product } from '@/products/entities/product.entity';
 
 @ApiTags('Products')
 @Controller('products')

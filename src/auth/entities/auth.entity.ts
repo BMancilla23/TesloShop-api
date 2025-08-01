@@ -4,11 +4,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserRole } from '../enums/role.enum';
-import { Product } from 'src/products/entities';
+
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('users')
@@ -58,14 +57,13 @@ export class User {
   @Column('enum', { enum: UserRole, default: UserRole.USER })
   role: UserRole;
 
-  @ApiProperty({
+  /*  @ApiProperty({
     description: 'Products related to the user',
     type: [Product],
-  })
-  // Products related to the user
+  }) */
+  /*   // Products related to the user
   @OneToMany(() => Product, (product) => product.user)
-  products?: Product[];
-
+  products?: Relation<Product[]>; */
   @BeforeInsert()
   checkFieldsBeforeInsert() {
     this.email = this.email.toLowerCase().trim();
