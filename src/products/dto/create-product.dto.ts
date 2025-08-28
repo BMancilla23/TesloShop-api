@@ -16,12 +16,11 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsPositive()
-  @IsOptional()
-  price?: number;
+  price: number;
 
   @IsString()
-  @IsOptional()
-  description?: string;
+  @MinLength(10)
+  description: string;
 
   @IsString()
   @IsOptional()
