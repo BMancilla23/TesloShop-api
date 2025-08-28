@@ -1,3 +1,15 @@
 {
-  "a-file-icon-vscode.activeIconPacks": ["angular", "rails"]
+  "a-file-icon-vscode.activeIconPacks": ["angular", "rails"],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 6543,
+      "driver": "PostgreSQL",
+      "name": "PG Conn",
+      "database": "teslo-shop",
+      "username": "root",
+      "password": "root"
+    }
+  ]
 }
