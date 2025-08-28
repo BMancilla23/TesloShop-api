@@ -36,11 +36,23 @@ export class Product {
     description: 'Product price',
     example: 10.99,
   })
+  @Column('decimal', {
+    precision: 10,
+    scale: 2,
+    default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
+  })
   price: number;
 
   @ApiProperty({
     description: 'Product description',
     example: 'This is a description of the product',
+  })
+  @Column('text', {
+    nullable: false,
   })
   description: string;
 
@@ -56,6 +68,9 @@ export class Product {
   @ApiProperty({
     description: 'Product stock',
     example: 10,
+  })
+  @Column('int', {
+    default: 0,
   })
   stock: number;
 
